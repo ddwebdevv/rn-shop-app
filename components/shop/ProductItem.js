@@ -1,30 +1,50 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Button,
+    Image,
+    TouchableOpacity,
+    TouchableNativeFeedback,
+    Platform
+} from 'react-native';
 import Colors from '../../constants/Colors';
 
 const ProductItem = ({ imageUrl, title, price, onViewDetail, onAddToCart }) => {
+    let TouchableComponent = TouchableOpacity;
+
+    if (Platform.OS === 'android' && Platform.Version >= 21) {
+        TouchableComponent = TouchableNativeFeedback;
+    }
 
     return (
         <View style={styles.product}>
-            <Image
-                style={styles.image}
-                source={{ uri: imageUrl }}
-            />
-            <View style={styles.details}>
-                <Text style={styles.title}>{title}</Text>
-                <Text style={styles.price}>${price.toFixed(2)}</Text>
-            </View>
-            <View style={styles.actions}>
-                <Button
-                    color={Colors.primary}
-                    title='View Details'
-                    onPress={onViewDetail}
-                />
-                <Button
-                    color={Colors.primary}
-                    title='To Cart'
-                    onPress={onAddToCart}
-                />
+            <View style={styles.touchable}>
+                <TouchableComponent onPress={onViewDetail} useForeground>
+                    <View>
+                        <Image
+                            style={styles.image}
+                            source={{ uri: imageUrl }}
+                        />
+                        <View style={styles.details}>
+                            <Text style={styles.title}>{title}</Text>
+                            <Text style={styles.price}>${price.toFixed(2)}</Text>
+                        </View>
+                        <View style={styles.actions}>
+                            <Button
+                                color={Colors.primary}
+                                title='View Details'
+                                onPress={onViewDetail}
+                            />
+                            <Button
+                                color={Colors.primary}
+                                title='To Cart'
+                                onPress={onAddToCart}
+                            />
+                        </View>
+                    </View>
+                </TouchableComponent>
             </View>
         </View>
     );
@@ -43,6 +63,10 @@ const styles = StyleSheet.create({
         margin: 20,
         overflow: 'hidden'
     },
+    touchable: {
+        overflow: 'hidden',
+        borderRadius: 15
+    },
     image: {
         width: '100%',
         height: '60%'
@@ -50,14 +74,16 @@ const styles = StyleSheet.create({
     details: {
         alignItems: 'center',
         height: '15%',
-        padding: 10
+        padding: 5
     },
     title: {
-        fontSize: 20,
-        marginVertical: 4
+        fontFamily: 'open-sans-bold',
+        fontSize: 22,
+        marginVertical: 2
     },
     price: {
-        fontSize: 15,
+        fontFamily: 'open-sans',
+        fontSize: 16,
         color: '#888'
     },
     actions: {

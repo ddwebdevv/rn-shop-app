@@ -1,6 +1,6 @@
 class Product {
-    constractor(id, ownerId, title, imageUrl, description, price) {
-        this.is = id;
+    constructor(id, ownerId, title, imageUrl, description, price) {
+        this.id = id;
         this.ownerId = ownerId;
         this.imageUrl = imageUrl;
         this.title = title;
@@ -8,3 +8,5 @@ class Product {
         this.price = price;
     }
 };
+
+export default Product;

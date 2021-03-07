@@ -1,8 +1,9 @@
 import React from 'react';
-import { Text, FlatList, Platform } from 'react-native';
+import { FlatList, Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
+import OrderItem from '../../components/shop/OrderItem';
 import CustomHeaderButton from '../../components/UI/HeaderButton';
 
 
@@ -13,7 +14,11 @@ const OrdersScreen = () => {
             data={orders}
             keyExtractor={item => item.id}
             renderItem={({ item }) => 
-                <Text>{item.totalAmount}</Text>
+                <OrderItem
+                    amount={item.totalAmount}
+                    date={item.readableDate}
+                    items={item.items}
+                />
             }
         />
     );

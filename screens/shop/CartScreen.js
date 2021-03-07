@@ -1,6 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, FlatList } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+
+import CartItem from '../../components/shop/CartItem';
+import { removeFromCart } from '../../store/actions/cart';
+import { addOrder } from '../../store/actions/orders';
+
 import Colors from '../../constants/Colors';
 
 const CartScreen = () => {
@@ -16,9 +21,10 @@ const CartScreen = () => {
                 sum: state.cart.items[key].sum
             });
         }
-        return cartToArray;
+        return cartToArray.sort((a, b) => a.productId > b.productId ? 1 : -1);
     });
-    
+
+    const dispatch = useDispatch();
 
     return (
         <View style={styles.screen}>
@@ -30,11 +36,31 @@ const CartScreen = () => {
                     title='Order Now'
                     color={Colors.secondary}
                     disabled={cartItems.length === 0}
+                    onPress={() => {
+                        dispatch(addOrder(cartItems, cartTotalAmount));
+                    }}
                 />
             </View>
-            <View></View>
+            <FlatList
+                data={cartItems}
+                keyExtractor={item => item.productId}
+                renderItem={({item}) => (
+                    <CartItem
+                        quantity={item.quantity}
+                        title={item.productTitle}
+                        amount={item.sum}
+                        onRemove={() => {
+                            dispatch(removeFromCart(item.productId));
+                        }}
+                    />
+                )}
+            />
         </View>
     );
+};
+
+CartScreen.navigationOptions = {
+    headerTitle: 'Your Cart'
 };
 
 const styles = StyleSheet.create({

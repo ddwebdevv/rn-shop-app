@@ -1,5 +1,6 @@
 import CartItem from "../../models/cart-item";
-import { ADD_TO_CART } from "../actions/cart";
+import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
+import { ADD_ORDER } from "../actions/orders";
 
 const initialState = {
     items: {},
@@ -13,11 +14,10 @@ export default (state = initialState, action) => {
             const productPrice = addedProduct.price;
             const productTitle = addedProduct.title;
             let updatedNewCartItem;
-console.log(state.totalAmount, productPrice)
             //items key - id
             if (state.items[addedProduct.id]) {
                 updatedNewCartItem = new CartItem(
-                    state.items[addedProduct.id].quantaty + 1,
+                    state.items[addedProduct.id].quantity + 1,
                     productPrice,
                     productTitle,
                     state.items[addedProduct.id].sum + productPrice
@@ -35,7 +35,30 @@ console.log(state.totalAmount, productPrice)
                 items: { ...state.items, [addedProduct.id]: updatedNewCartItem },
                 totalAmount: state.totalAmount + productPrice
             };
-
+        case REMOVE_FROM_CART:
+            const selectedCartItem = state.items[action.payload];
+            const currentQty = selectedCartItem.quantity;
+            let updatedCartItems;
+            if (currentQty > 1) {
+                const updatedCartItem = new CartItem(
+                    selectedCartItem.quantity - 1,
+                    selectedCartItem.productPrice,
+                    selectedCartItem.productTitle,
+                    selectedCartItem.sum - selectedCartItem.productPrice
+                );
+                updatedCartItems = { ...state.items, [action.payload]: updatedCartItem };
+            } else {
+                updatedCartItems = { ...state.items };
+                //delete JS method
+                delete updatedCartItems[action.payload];
+            }
+            return {
+                ...state,
+                items: updatedCartItems,
+                totalAmount: state.totalAmount - selectedCartItem.productPrice
+            };
+        case ADD_ORDER:
+            return initialState;
     }
     return state;
 };

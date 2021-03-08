@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import CartItem from '../../components/shop/CartItem';
 import { removeFromCart } from '../../store/actions/cart';
 import { addOrder } from '../../store/actions/orders';
+import Card from '../../components/UI/Card';
 
 import Colors from '../../constants/Colors';
 
@@ -28,9 +29,9 @@ const CartScreen = () => {
 
     return (
         <View style={styles.screen}>
-            <View style={styles.summary}>
+            <Card style={styles.summary}>
                 <Text style={styles.summaryText}>
-                    Total: <Text style={styles.amount}>${cartTotalAmount.toFixed(2)}</Text>
+                    Total: <Text style={styles.amount}>${Math.round(cartTotalAmount.toFixed(2) * 100) / 100}</Text>
                 </Text>
                 <Button
                     title='Order Now'
@@ -40,7 +41,7 @@ const CartScreen = () => {
                         dispatch(addOrder(cartItems, cartTotalAmount));
                     }}
                 />
-            </View>
+            </Card>
             <FlatList
                 data={cartItems}
                 keyExtractor={item => item.productId}
@@ -73,14 +74,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: 10,
-        marginBottom: 20,
-        shadowColor: 'black',
-        shadowOpacity: 0.25,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 10,
-        elevation: 7,
-        borderRadius: 15,
-        backgroundColor: 'white'
+        marginBottom: 20
     },
     summaryText: {
         fontFamily: 'open-sans',

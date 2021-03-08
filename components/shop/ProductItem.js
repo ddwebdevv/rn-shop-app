@@ -9,9 +9,10 @@ import {
     TouchableNativeFeedback,
     Platform
 } from 'react-native';
-import Colors from '../../constants/Colors';
 
-const ProductItem = ({ imageUrl, title, price, onViewDetail, onAddToCart }) => {
+import Card from '../UI/Card';
+
+const ProductItem = ({ imageUrl, title, price, onSelect, children }) => {
     let TouchableComponent = TouchableOpacity;
 
     if (Platform.OS === 'android' && Platform.Version >= 21) {
@@ -19,9 +20,9 @@ const ProductItem = ({ imageUrl, title, price, onViewDetail, onAddToCart }) => {
     }
 
     return (
-        <View style={styles.product}>
+        <Card style={styles.product}>
             <View style={styles.touchable}>
-                <TouchableComponent onPress={onViewDetail} useForeground>
+                <TouchableComponent onPress={onSelect} useForeground>
                     <View>
                         <Image
                             style={styles.image}
@@ -32,33 +33,17 @@ const ProductItem = ({ imageUrl, title, price, onViewDetail, onAddToCart }) => {
                             <Text style={styles.price}>${price.toFixed(2)}</Text>
                         </View>
                         <View style={styles.actions}>
-                            <Button
-                                color={Colors.primary}
-                                title='View Details'
-                                onPress={onViewDetail}
-                            />
-                            <Button
-                                color={Colors.primary}
-                                title='To Cart'
-                                onPress={onAddToCart}
-                            />
+                            {children}
                         </View>
                     </View>
                 </TouchableComponent>
             </View>
-        </View>
+        </Card>
     );
 };
 
 const styles = StyleSheet.create({
     product: {
-        shadowColor: 'black',
-        shadowOpacity: 0.25,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 10,
-        elevation: 7,
-        borderRadius: 15,
-        backgroundColor: 'white',
         height: 300,
         margin: 20,
         overflow: 'hidden'
@@ -73,7 +58,7 @@ const styles = StyleSheet.create({
     },
     details: {
         alignItems: 'center',
-        height: '15%',
+        height: '17%',
         padding: 5
     },
     title: {
@@ -90,7 +75,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: '25%',
+        height: '23%',
         paddingHorizontal: 20
     }
 });

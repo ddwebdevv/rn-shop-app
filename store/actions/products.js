@@ -14,7 +14,7 @@ export const fetchProducts = () => {
                 throw new Error('Something went wrong')
             }
 
-            const responseData = response.json();
+            const responseData = await response.json();
             const loadedProducts = [];
     
             for (const key in responseData) {
@@ -37,13 +37,20 @@ export const fetchProducts = () => {
             throw err;
         }
     };
-}
+};
 
 export const deleteProduct = productId => {
-    return {
-        type: DELETE_PRODUCT,
-        payload: productId
-    }
+    return async dispatch => {
+        await fetch(`https://rn-shop-app-617d7-default-rtdb.firebaseio.com/products/${productId}.json`,
+        {
+            method: 'DELETE'
+        });
+
+        dispatch({
+            type: DELETE_PRODUCT,
+            payload: productId
+        });
+    };
 };
 
 export const createProduct = (title, description, imageUrl, price) => {
@@ -77,13 +84,26 @@ export const createProduct = (title, description, imageUrl, price) => {
 };
 
 export const updateProduct = (id, title, description, imageUrl) => {
-    return {
-        type: UPDATE_PRODUCT,
-        payload: {
-            id,
-            title,
-            description,
-            imageUrl
-        }
-    }
+    return async dispatch => {
+        await fetch(`https://rn-shop-app-617d7-default-rtdb.firebaseio.com/products/${id}.json`, {
+            method: 'PATCH', //patch will update it where it needed
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                title,
+                description,
+                imageUrl
+            })
+        });
+        dispatch({
+            type: UPDATE_PRODUCT,
+            payload: {
+                id,
+                title,
+                description,
+                imageUrl
+            }
+        });
+    };
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, FlatList, Button, Platform, ActivityIndicator, View } from 'react-native';
+import { StyleSheet, FlatList, Button, Platform, ActivityIndicator, View, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
@@ -29,6 +29,16 @@ const ProductOverViewScreen = ({ navigation }) => {
         setIsLoading(false);
     }, [dispatch, setError, setIsLoading]);
 
+    //so we can use loadProducts on other screens
+    useEffect(() => {
+        const willFocusSub = navigation.addListener('willFocus', loadProducts);
+
+        //clean up
+        return () => {
+            willFocusSub.remove();
+        };
+    }, [loadProducts]);
+
     useEffect(() => {
         loadProducts();
     }, [dispatch, loadProducts]);
@@ -43,8 +53,9 @@ const ProductOverViewScreen = ({ navigation }) => {
     if (error) {
         return <View style={styles.centered}>
             <Text>An error occurred!</Text>
+            <Text>{error.message}</Text>
             <Button
-                tytle='Try Again'
+                title='Try Again'
                 onPress={loadProducts}
                 color={Colors.primary}
             />

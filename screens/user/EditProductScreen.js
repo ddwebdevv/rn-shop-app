@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useReducer } from 'react';
+import React, { useEffect, useCallback, useReducer, useState } from 'react';
 import { StyleSheet, KeyboardAvoidingView, ScrollView, View, Platform, Alert } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
@@ -36,6 +36,10 @@ const EditProductScreen = ({ navigation }) => {
     const prodId = navigation.getParam('productId');
     const dispatch = useDispatch();
 
+    const editedProduct = useSelector(state =>
+        state.products.userProducts.find(product => product.id === prodId)
+    );
+    
     //creating initial state for whole form instead many states
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues: {
@@ -55,9 +59,6 @@ const EditProductScreen = ({ navigation }) => {
 
     const { title, price, description, imageUrl } = formState.inputValues;
 
-    const editedProduct = useSelector(state =>
-        state.products.userProducts.find(product => product.id === prodId)
-    );
 
     //usint useReducer instead
     // const [title, setTitle] = useState(editedProduct ? editedProduct.title : '');

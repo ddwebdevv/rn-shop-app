@@ -24,7 +24,7 @@ const OrdersScreen = () => {
     }, [dispatch]);
 
     if (isLoading) {
-        return <View style={StyleSheet.centered}>
+        return <View style={styles.centered}>
             <ActivityIndicator
                 size='large'
                 color={Colors.primary}

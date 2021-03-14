@@ -173,6 +173,7 @@ const EditProductScreen = ({ navigation }) => {
                         returnKeyType='next'
                         onInputChange={inputChangeHandler}
                         min={0.1}
+                        required
                     />}
                     <Input
                         id='description'

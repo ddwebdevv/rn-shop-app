@@ -16,7 +16,7 @@ export const fetchOrders = () => {
             const loadedOrders = [];
     
             for (const key in responseData) {
-                loadedProducts.push(new Order(
+                loadedOrders.push(new Order(
                     key,
                     responseData[key].cartItems,
                     responseData[key].totalAmount,

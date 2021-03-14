@@ -19,14 +19,24 @@ export const signup = (email, password) => {
         );
 
         if(!response.ok) {
-            throw new Error('Something went wrong!');
+            const errorRes = await response.json();
+            const errorId = errorRes.error.message;
+            let message = 'Something went wrong!';
+            if (errorId === 'EMAIL_EXISTS') {
+                message = 'This email already registered';
+            }
+            throw new Error(message);
         }
 
         const responseData = await response.json();
         console.log(responseData);
 
         dispatch({
-            type: SIGNUP
+            type: SIGNUP,
+            payload: {
+                token: responseData.idToken,
+                userId: responseData.localId
+            }
         });
     };
 };
@@ -49,14 +59,26 @@ export const login = (email, password) => {
         );
 
         if(!response.ok) {
-            throw new Error('Something went wrong!');
+            const errorRes = await response.json();
+            const errorId = errorRes.error.message;
+            let message = 'Something went wrong!';
+            if (errorId === 'EMAIL_NOT_FOUND') {
+                message = 'This email could not be found';
+            } else if (errorId === 'INVALID_PASSWORD') {
+                message = 'Email and password do not match';
+            }
+            throw new Error(message);
         }
 
         const responseData = await response.json();
         console.log(responseData);
 
         dispatch({
-            type: LOGIN
+            type: LOGIN,
+            payload: {
+                token: responseData.idToken,
+                userId: responseData.localId
+            }
         });
     };
 };

@@ -6,7 +6,8 @@ export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 
 export const fetchProducts = () => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
+        const userId = getState().auth.userId;
         try {
             const response = await fetch('https://rn-shop-app-617d7-default-rtdb.firebaseio.com/products.json');
     
@@ -20,17 +21,21 @@ export const fetchProducts = () => {
             for (const key in responseData) {
                 loadedProducts.push(new Product(
                     key,
-                    'u1',
+                    responseData[key].ownerId,
                     responseData[key].title,
                     responseData[key].imageUrl,
                     responseData[key].description,
                     responseData[key].price
                 ));
             }
+            const userProducts = loadedProducts.filter(product => product.ownerId === userId);
     
             dispatch({
                 type: SET_PRODUCTS,
-                payload: loadedProducts
+                payload: {
+                    products: loadedProducts,
+                    userProducts: userProducts
+                }
             });
         } catch (err) {
             //also can send to some analytics server
@@ -40,8 +45,9 @@ export const fetchProducts = () => {
 };
 
 export const deleteProduct = productId => {
-    return async dispatch => {
-        await fetch(`https://rn-shop-app-617d7-default-rtdb.firebaseio.com/products/${productId}.json`,
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
+        await fetch(`https://rn-shop-app-617d7-default-rtdb.firebaseio.com/products/${productId}.json?auth=${token}`,
         {
             method: 'DELETE'
         });
@@ -54,8 +60,10 @@ export const deleteProduct = productId => {
 };
 
 export const createProduct = (title, description, imageUrl, price) => {
-    return async dispatch => {
-        const response = await fetch('https://rn-shop-app-617d7-default-rtdb.firebaseio.com/products.json',
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
+        const userId = getState().auth.userId;
+        const response = await fetch(`https://rn-shop-app-617d7-default-rtdb.firebaseio.com/products.json?auth=${token}`,
         {
             method: 'POST',
             headers: {
@@ -65,7 +73,8 @@ export const createProduct = (title, description, imageUrl, price) => {
                 title,
                 description,
                 imageUrl,
-                price
+                price,
+                ownerId: userId
             })
         });
 
@@ -78,15 +87,19 @@ export const createProduct = (title, description, imageUrl, price) => {
                 title,
                 description,
                 imageUrl,
-                price
+                price,
+                ownerId: userId
             }
         });
     }
 };
 
 export const updateProduct = (id, title, description, imageUrl) => {
-    return async dispatch => {
-        await fetch(`https://rn-shop-app-617d7-default-rtdb.firebaseio.com/products/${id}.json`, {
+    //thunk with second argument gives us access to redux state
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
+        //for auth we need to add ?auth=[token]
+        await fetch(`https://rn-shop-app-617d7-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`, {
             method: 'PATCH', //patch will update it where it needed
             headers: {
                 'Content-type': 'application/json'

@@ -10,12 +10,14 @@ import * as Font from 'expo-font';
 import cartReducer from './store/reducers/cart';
 import productReducer from './store/reducers/products';
 import ordersReducer from './store/reducers/orders';
+import authReducer from './store/reducers/auth';
 import ShopNavigator from './navigation/ShopNavigator';
 
 const rootReducer = combineReducers({
   products: productReducer,
   cart: cartReducer,
-  orders: ordersReducer
+  orders: ordersReducer,
+  auth: authReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

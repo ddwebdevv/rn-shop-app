@@ -32,11 +32,11 @@ const ProductOverViewScreen = ({ navigation }) => {
 
     //so we can use loadProducts on other screens
     useEffect(() => {
-        const willFocusSub = navigation.addListener('willFocus', loadProducts);
+        const unsubscribe = navigation.addListener('focus', loadProducts);
 
         //clean up
         return () => {
-            willFocusSub.remove();
+            unsubscribe();
         };
     }, [loadProducts]);
 
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     }
 });
 
-ProductOverViewScreen.navigationOptions = navData => ({
+export const screenOptions = navData => ({
     headerTitle: 'All Products',
     headerLeft: () => <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
         <Item

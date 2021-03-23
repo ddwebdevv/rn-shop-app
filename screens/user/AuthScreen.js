@@ -69,7 +69,7 @@ const AuthScreen = ({ navigation }) => {
         setIsLoading(true);
         try {
             await dispatch(action);
-            navigation.navigate('Shop');
+            // navigation.navigate('Shop');
         } catch (error) {
             setError(error.message)
             setIsLoading(false);
@@ -88,7 +88,7 @@ const AuthScreen = ({ navigation }) => {
     return (
         <KeyboardAvoidingView
             behavior='padding'
-            keyboardVerticalOffset={50}
+            keyboardVerticalOffset={10}
             style={styles.screen}
         >
             <LinearGradient
@@ -149,7 +149,7 @@ const AuthScreen = ({ navigation }) => {
     );
 };
 
-AuthScreen.navigationOptions = {
+export const authScreenOptions = {
     headerTitle: 'Authenticate'
 };
 

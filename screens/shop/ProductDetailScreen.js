@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as CartActions from '../../store/actions/cart';
 import Colors from '../../constants/Colors';
 
-const ProductDetailScreen = ({ navigation }) => {
-    const productId = navigation.getParam('productId');
+const ProductDetailScreen = ({ route }) => {
+    const productId = route.params.productId;
     const selectedProduct = useSelector(state =>
         state.products.availableProducts.find(product => product.id === productId)
     );
@@ -57,9 +57,9 @@ const styles = StyleSheet.create({
     }
 });
 
-ProductDetailScreen.navigationOptions = navData => {
+export const productDetailScreenOptions = ({ route }) => {
     return {
-        headerTitle: navData.navigation.getParam('productTitle')
+        headerTitle: route.params.productTitle
     }
 };
 

@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import Colors from '../constants/Colors';
-import { authenticate } from '../store/actions/auth';
+import { authenticate, setDidTryAutologin } from '../store/actions/auth';
 
 const StartUpScreen = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -13,7 +13,8 @@ const StartUpScreen = ({ navigation }) => {
         const tryLogin = async () => {
             const userData = await AsyncStorage.getItem('userData');
             if (!userData) {
-                navigation.navigate('Auth');
+                // navigation.navigate('Auth');
+                dispatch(setDidTryAutologin());
                 return;
             }
             const transformedData = JSON.parse(userData);
@@ -22,13 +23,14 @@ const StartUpScreen = ({ navigation }) => {
             const expDate = new Date(expirationDate);
 
             if (expDate <= new Date() || !token || !userId) {
-                navigation.navigate('Auth');
+                // navigation.navigate('Auth');
+                dispatch(setDidTryAutologin());
                 return;
             }
             
-            const expirationTime = expirationDate.getTime() - new Date().getTime;
+            const expirationTime = expirationDate - new Date().getTime;
 
-            navigation.navigate('Shop');
+            // navigation.navigate('Shop');
             dispatch(authenticate(userId, token, expirationTime));
         };
 

@@ -70,7 +70,7 @@ const UserProductsScreen = ({ navigation }) => {
 };
 
 
-UserProductsScreen.navigationOptions = navData => ({
+export const userProductsScreenOptions = navData => ({
     headerTitle: 'Your Products',
     headerLeft: () => <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
         <Item

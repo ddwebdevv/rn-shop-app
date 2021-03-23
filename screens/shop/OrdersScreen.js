@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     }
 });
 
-OrdersScreen.navigationOptions = navData => ({
+export const ordersScreenOptions = navData => ({
     headerTitle: 'Your Orders',
     headerLeft: () => <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
         <Item

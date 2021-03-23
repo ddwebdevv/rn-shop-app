@@ -41,17 +41,17 @@ const formReducer = (state, action) => {
 };
 
 
-const EditProductScreen = ({ navigation }) => {
+const EditProductScreen = ({ navigation, route }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
 
-    const prodId = navigation.getParam('productId');
+    const prodId = route.params ? route.params.productId : null;
     const dispatch = useDispatch();
 
     const editedProduct = useSelector(state =>
         state.products.userProducts.find(product => product.id === prodId)
     );
-    
+
     //creating initial state for whole form instead many states
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues: {
@@ -69,15 +69,15 @@ const EditProductScreen = ({ navigation }) => {
         formIsValid: editedProduct ? true : false
     });
 
-    
-    
+
+
     //usint useReducer instead
     // const [title, setTitle] = useState(editedProduct ? editedProduct.title : '');
     // const [titleIsValid, setTitleIsValid] = useState(false);
     // const [imageUrl, setImageUrl] = useState(editedProduct ? editedProduct.imageUrl : '');
     // const [price, setPrice] = useState('');
     // const [description, setDescription] = useState(editedProduct ? editedProduct.description : '');
-    
+
     const { title, price, description, imageUrl } = formState.inputValues;
 
     const submitHandler = useCallback(async () => {
@@ -112,7 +112,15 @@ const EditProductScreen = ({ navigation }) => {
     }, [error]);
 
     useEffect(() => {
-        navigation.setParams({ submit: submitHandler });
+        navigation.setOptions({
+            headerRight: () => <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item
+                    title='Save'
+                    iconName={Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'}
+                    onPress={submitHandler}
+                />
+            </HeaderButtons>
+        });
     }, [submitHandler]);
 
     const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValidity) => {
@@ -137,7 +145,7 @@ const EditProductScreen = ({ navigation }) => {
         <KeyboardAvoidingView
             style={{ flex: 1 }}
             behavior='padding'
-            keyboardVerticalOffset={100}
+            keyboardVerticalOffset={10}
         >
             <ScrollView>
                 <View style={styles.formContainer}>
@@ -196,19 +204,12 @@ const EditProductScreen = ({ navigation }) => {
     );
 };
 
-EditProductScreen.navigationOptions = ({ navigation }) => {
-    const submit = navigation.getParam('submit');
+export const editProductScreenOptions = ({ route }) => {
+    const routeParams = route.params ? route.params : {};
     return {
-        headerTitle: navigation.getParam('productId')
+        headerTitle: routeParams.productId
             ? 'Edit Product'
-            : 'Add Product',
-        headerRight: () => <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-            <Item
-                title='Save'
-                iconName={Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'}
-                onPress={submit}
-            />
-        </HeaderButtons>
+            : 'Add Product'
     };
 };
 

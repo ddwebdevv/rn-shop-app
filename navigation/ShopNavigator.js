@@ -94,7 +94,7 @@ const ShopNavigator = createDrawerNavigator({
                     title='Logout'
                     color={Colors.primary}
                     onPress={() => {
-                        dispatch(logout);
+                        dispatch(logout());
                         props.navigation.navigate('Auth');
                     }}
                 />

@@ -70,5 +70,23 @@ export const addOrder = (cartItems, totalAmount) => {
             date: date
         }
         });
+
+        // sending push notifications
+        for (const cartItem of cartItems) {
+            const pushToken = cartItem.productPushToken;
+            fetch('https://exp.host/--/api/v2/push/send', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    to: pushToken,
+                    title: 'Order was placed!',
+                    body: cartItem.productTitle
+                })
+            });
+        }
     };
 };

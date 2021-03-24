@@ -26,7 +26,7 @@ const StartUpScreen = ({ navigation }) => {
                 return;
             }
             
-            const expirationTime = expirationDate.getTime() - new Date().getTime;
+            const expirationTime = expirationDate - new Date().getTime;
 
             navigation.navigate('Shop');
             dispatch(authenticate(userId, token, expirationTime));
